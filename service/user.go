@@ -33,8 +33,9 @@ func (u *UserServiceImpl) CreateUser(ctx context.Context, user model.User) (mode
 	user.UpdatedAt = now
 
 	messageKey := model.NewFourEyesMessageKey(user.ID, "user", "create")
+	msg := model.NewFourEyesMessage(nil, user, "system")
 
-	err := u.eventSender.Send(*messageKey, user)
+	err := u.eventSender.Send(*messageKey, *msg)
 	if err != nil {
 		return model.User{}, err
 	}

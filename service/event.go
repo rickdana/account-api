@@ -9,7 +9,7 @@ import (
 )
 
 type EventSender interface {
-	Send(key model.FourEyesMessageKey, message any) error
+	Send(key model.FourEyesMessageKey, message model.FourEyesMessage) error
 }
 
 type EventReceiver interface {
@@ -34,7 +34,7 @@ func NewKafkaSender(config KafkaConfig) EventSender {
 	return &KafkaSender{Conn: conn}
 }
 
-func (k *KafkaSender) Send(key model.FourEyesMessageKey, message any) error {
+func (k *KafkaSender) Send(key model.FourEyesMessageKey, message model.FourEyesMessage) error {
 	bytesMsg, err := json.Marshal(message)
 	if err != nil {
 		return err
@@ -49,8 +49,5 @@ func (k *KafkaSender) Send(key model.FourEyesMessageKey, message any) error {
 		log.Fatal("failed to write messages:", err)
 	}
 
-	if err := k.Conn.Close(); err != nil {
-		return err
-	}
 	return nil
 }

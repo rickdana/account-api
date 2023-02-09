@@ -66,8 +66,9 @@ func (ar *accountsResource) Create(w http.ResponseWriter, r *http.Request) {
 	account.UpdatedBy = user
 
 	msgKey := model.NewFourEyesMessageKey(account.ID, "cnc-account", model.CREATE)
+	msg := model.NewFourEyesMessage(nil, account, user)
 
-	if err := ar.kafkaSvc.Send(*msgKey, account); err != nil {
+	if err := ar.kafkaSvc.Send(*msgKey, *msg); err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, err)
 		return
